@@ -1,0 +1,22 @@
+FROM apache/airflow:2.8.1-python3.11
+
+USER root
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    git \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+USER airflow
+
+# Copy and install Python dependencies
+COPY requirements.txt /requirements.txt
+RUN pip install --no-cache-dir -r /requirements.txt
+
+# Copy the src folder so Airflow can import your collectors
+COPY src/ /opt/airflow/src/
+
+# Copy DAGs
+COPY airflow/dags/ /opt/airflow/dags/

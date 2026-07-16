@@ -4,7 +4,7 @@ import logging
 import os
 import json
 from datetime import date, datetime
-from dotenv import load_dotenv
+
  
 # ── Load .env file ────────────────────────────────────────────────────────────
 load_dotenv()
@@ -14,4 +14,4 @@ DB_HOST      = os.getenv("DB_HOST", "localhost")
 DB_PORT      = os.getenv("DB_PORT", "5432")
 DB_NAME      = os.getenv("DB_NAME", "devtrend_db")
 DB_USER      = os.getenv("DB_USER")
-DB_PASSWORD  = os.getenv("DB_PASSWORD")
+DB_PASSWORD  = os.getenv("DB_P

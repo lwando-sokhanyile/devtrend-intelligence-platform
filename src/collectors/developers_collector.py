@@ -1,3 +1,102 @@
+"""
+Repositories Collector
+======================
+Fetches trending repositories from the GitHub API
+and loads them into PostgreSQL.
+ 
+Author: Lwando Sokhanyile
+Project: DevTrend Intelligence Platform
+"""
+ 
+import requests
+import psycopg2
+import logging
+import os
+import json
+from datetime import date, datetime
+from dotenv import load_dotenv
+ 
+# ── Load .env file ────────────────────────────────────────────────────────────
+load_dotenv()
+ 
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+DB_HOST      = os.getenv("DB_HOST", "localhost")
+DB_PORT      = os.getenv("DB_PORT", "5432")
+DB_NAME      = os.getenv("DB_NAME", "devtrend_db")
+DB_USER      = os.getenv("DB_USER")
+DB_PASSWORD  = os.getenv("DB_PASSWORD")
+ 
+# ── Logging ───────────────────────────────────────────────────────────────────
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s",
+    handlers=[
+        logging.StreamHandler(),
+        logging.FileHandler("repos_collector.log")
+    ]
+)
+log = logging.getLogger(__name__)
+ 
+# ── GitHub API ────────────────────────────────────────────────────────────────
+# We search for repos created in the last 7 days with many stars
+# This is the closest public API approach to "trending"
+GITHUB_API_URL = "https://api.github.com/search/repositories"
+HEADERS = {
+    "Accept": "application/vnd.github.v3+json",
+}
+if GITHUB_TOKEN:
+    HEADERS["Authorization"] = f"Bearer {GITHUB_TOKEN}"
+ 
+ 
+# ══════════════════════════════════════════════════════════════════════════════
+# STEP 1 — FETCH
+# ══════════════════════════════════════════════════════════════════════════════
+ 
+def fetch_trending_repos():
+    """
+    Calls the GitHub Search API to get repositories
+    sorted by stars, created in the last 7 days.
+    Returns a list of repository dictionaries.
+    """
+    log.info("Fetching trending repositories from GitHub API...")
+ 
+    # Search for repos created in the last 7 days, sorted by stars
+    from datetime import timedelta
+    week_ago = (date.today() - timedelta(days=7)).isoformat()
+ 
+    params = {
+        "q": f"created:>{week_ago}",
+        "sort": "stars",
+        "order": "desc",
+        "per_page": 25,   # top 25 trending repos
+    }
+ 
+    try:
+        response = requests.get(
+            GITHUB_API_URL,
+            headers=HEADERS,
+            params=params,
+            timeout=10
+        )
+        response.raise_for_status()
+        data = response.json()
+        repos = data.get("items", [])
+        log.info(f"Fetched {len(repos)} trending repositories.")
+        return repos
+ 
+    except requests.exceptions.Timeout:
+        log.error("GitHub API request timed out.")
+        raise
+ 
+    except requests.exceptions.HTTPError as e:
+        log.error(f"GitHub API error: {e.response.status_code} - {e.response.text}")
+        raise
+ 
+    except requests.exceptions.RequestException as e:
+        log.error(f"Failed to connect to GitHub API: {e}")
+        raise
+
+
 import requests
 import psycopg2
 import logging

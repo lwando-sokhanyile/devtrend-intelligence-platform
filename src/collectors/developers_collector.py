@@ -96,25 +96,12 @@ def fetch_trending_repos():
         log.error(f"Failed to connect to GitHub API: {e}")
         raise
 
-
-import requests
-import psycopg2
-import logging
-import os
-import json
-from datetime import date, datetime
-
  
-# ── Load .env file ────────────────────────────────────────────────────────────
-load_dotenv()
- 
-GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
-DB_HOST      = os.getenv("DB_HOST", "localhost")
-DB_PORT      = os.getenv("DB_PORT", "5432")
-DB_NAME      = os.getenv("DB_NAME", "devtrend_db")
-DB_USER      = os.getenv("DB_USER")
-DB_PASSWORD  = os.getenv("DB_P
 
+# ══════════════════════════════════════════════════════════════════════════════
+# STEP 2 — VALIDATE
+# ══════════════════════════════════════════════════════════════════════════════
+ 
 def validate_repo(repo):
     """
     Checks that a repo has all the fields we need.
@@ -128,7 +115,6 @@ def validate_repo(repo):
             return False
  
     return True
- 
  
 # ══════════════════════════════════════════════════════════════════════════════
 # STEP 3 — DATABASE
@@ -182,4 +168,3 @@ def create_table(conn):
         log.error(f"Failed to create table: {e}")
         conn.rollback()
         raise
- 

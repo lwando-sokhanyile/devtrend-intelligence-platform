@@ -168,3 +168,83 @@ def create_table(conn):
         log.error(f"Failed to create table: {e}")
         conn.rollback()
         raise
+
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# STEP 4 — LOAD
+# ══════════════════════════════════════════════════════════════════════════════
+ 
+def load_repos(conn, repos):
+    """
+    Inserts trending repos into PostgreSQL.
+    Uses ON CONFLICT DO NOTHING so running twice
+    never creates duplicate rows (idempotent).
+    """
+    log.info(f"Loading {len(repos)} repos into PostgreSQL...")
+ 
+    sql = """
+        INSERT INTO raw_trending_repos (
+            snapshot_date,
+            repo_name,
+            owner,
+            description,
+            language,
+            stars_total,
+            forks,
+            topics,
+            github_url,
+            fetched_at
+        )
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        ON CONFLICT (repo_name, owner, snapshot_date)
+        DO NOTHING;
+    """
+ 
+    today      = date.today()
+    fetched_at = datetime.utcnow()
+    inserted   = 0
+    skipped    = 0
+ 
+    for repo in repos:
+ 
+        # Validate before inserting
+        if not validate_repo(repo):
+            skipped += 1
+            continue
+ 
+        values = (
+            today,
+            repo["name"],
+            repo["owner"]["login"],
+            repo.get("description", ""),
+            repo.get("language"),
+            repo.get("stargazers_count", 0),
+            repo.get("forks_count", 0),
+            json.dumps(repo.get("topics", [])),
+            repo.get("html_url", ""),
+            fetched_at,
+        )
+ 
+        try:
+            with conn.cursor() as cur:
+                cur.execute(sql, values)
+                if cur.rowcount > 0:
+                    inserted += 1
+                else:
+                    skipped += 1  # already exists for today
+            conn.commit()
+ 
+        except psycopg2.Error as e:
+            log.error(f"Failed to insert {repo['name']}: {e}")
+            conn.rollback()
+            skipped += 1
+ 
+    log.info(f"Done — inserted: {inserted}, skipped: {skipped}")
+    return inserted, skipped
+ 
+ 
+# ══════════════════════════════════════════════════════════════════════════════
+# MAIN
+# ══════════════════════════════════════════════════════════════════════════════
+ 

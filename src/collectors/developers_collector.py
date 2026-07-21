@@ -248,3 +248,32 @@ def load_repos(conn, repos):
 # MAIN
 # ══════════════════════════════════════════════════════════════════════════════
  
+def main():
+    log.info("=" * 55)
+    log.info("Repos Collector Starting")
+    log.info("=" * 55)
+ 
+    # Fetch
+    repos = fetch_trending_repos()
+ 
+    # Connect to database
+    conn = get_db_connection()
+ 
+    try:
+        # Create table if needed
+        create_table(conn)
+ 
+        # Load data
+        inserted, skipped = load_repos(conn, repos)
+ 
+    finally:
+        conn.close()
+        log.info("Database connection closed.")
+ 
+    log.info("=" * 55)
+    log.info(f"Repos Collector Finished — {inserted} inserted, {skipped} skipped")
+    log.info("=" * 55)
+ 
+ 
+if __name__ == "__main__":
+    main()

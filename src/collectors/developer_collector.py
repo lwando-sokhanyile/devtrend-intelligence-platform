@@ -239,7 +239,7 @@ def load_developers(conn, developers):
             dev.get("name"),
             dev.get("bio"),
             dev.get("location"),
-            dev.get("language"),  # may be None — that's fine
+            dev.get("language"),  
             dev.get("followers", 0),
             dev.get("public_repos", 0),
             dev.get("html_url", ""),

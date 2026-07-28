@@ -20,3 +20,5 @@ COPY src/ /opt/airflow/src/
 
 # Copy DAGs
 COPY airflow/dags/ /opt/airflow/dags/
+
+ENV AIRFLOW__WEBSERVER__WEB_SERVER_WORKER_TIMEOUT=300

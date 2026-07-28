@@ -88,8 +88,8 @@ services:
       test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
       interval: 30s
       timeout: 10s
-      retries: 5
-      start_period: 30s
+      retries: 10
+      start_period: 120s
     restart: unless-stopped
     depends_on:
       airflow-init:
@@ -132,6 +132,7 @@ services:
     networks:
       - devtrend-network
     restart: "no"   # runs once and exits — Airflow handles scheduling
+    profiles: ["collectors"]
 
   # ── dbt ─────────────────────────────────────────────────────────────────────
   dbt:
@@ -154,6 +155,7 @@ services:
     networks:
       - devtrend-network
     restart: "no"   # runs once and exits — Airflow triggers it after collectors
+    profiles: ["dbt"]
 
   # ── Metabase ─────────────────────────────────────────────────────────────────
   metabase:
@@ -174,6 +176,7 @@ services:
     networks:
       - devtrend-network
     restart: unless-stopped
+    profiles: ["metabase"]
 
 # ── Volumes & Networks ────────────────────────────────────────────────────────
 volumes:

@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: raw
+    database: devtrend_db
+    schema: public
+    tables:
+      - name: raw_trending_repos
+      - name: raw_language_trends
+      - name: raw_trending_developers

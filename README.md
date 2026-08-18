@@ -11,21 +11,19 @@
 
 ---
 
-## What This Project Does
+## What I Built
 
-GitHub surfaces trending repositories, languages, and developers every day — but that data disappears. No history. No patterns. No intelligence.
+GitHub surfaces trending repositories, languages, and developers every day but that data disappears. There is no historical record, no way to track which languages are growing, and no way to measure how fast a project gained traction.
 
-**DevTrend Intelligence Platform** is a production-grade data pipeline that:
+I built a pipeline that captures this data every day, stores it in PostgreSQL, transforms it through a three-layer dbt model, and serves it through a live Metabase dashboard.
 
-- Ingests daily trending data from the GitHub API (repositories, languages, developers)
-- Stores raw data in PostgreSQL
-- Transforms it through a three-layer dbt model into analytics-ready tables
-- Serves live insights via a Metabase dashboard
-- Orchestrates everything automatically with Apache Airflow
-- Runs entirely in Docker with a single command
+The question it answers: **What technologies is the global developer community moving towards  and how fast?**
 
-**The question it answers:** *What technologies is the global developer community moving towards — and how fast?*
+## Why I Built It
 
+I wanted a project that covered the full data engineering stack in one place  not just moving data, but orchestrating it, testing it, modeling it, and visualising it. I chose GitHub trending data specifically because it updates daily, the API is free, and the insights are immediately interesting to any technical interviewer.
+
+I also wanted to push myself to learn dbt properly, because most of my earlier projects did transformations inside Python scripts rather than in a proper modeling layer.
 ---
 
 ## Architecture
@@ -259,13 +257,21 @@ This project runs on a single machine. LocalExecutor is the right choice — no 
 
 ---
 
-## What I Learned Building This
+## Challenges & Lessons
 
-- Designing idempotent pipelines that are safe to run multiple times
-- Structuring dbt projects with proper staging, intermediate, and mart layers
-- Writing Airflow DAGs with proper dependency management and failure handling
-- Running multiple services together with Docker Compose
-- Building data quality monitoring into the pipeline from the start
+**PostgreSQL authentication across Docker and Windows** The collectors and dbt both needed to connect to PostgreSQL, but one ran inside Docker and the other ran from my Windows terminal. They couldn't use the same port. After testing the connection at different layers I discovered a local PostgreSQL 18 installation was already running on port 5432. Docker PostgreSQL was mapped to 5433 for external connections, and all local tooling had to be updated to reflect this. A simple problem that took significant debugging to trace.
+
+**Airflow memory on an 8GB machine** Running Airflow webserver, scheduler, and PostgreSQL together consistently hit memory limits and caused gunicorn to time out. The fix was reducing Airflow to a single worker and separating development workflow from orchestration dbt and collectors run directly from the terminal during development, and Airflow is used only for scheduling in the final setup.
+
+**dbt modeling discipline** My earlier projects did transformations in Python. Learning to keep transformation logic in SQL and use dbt's ref() system for dependencies required a different way of thinking. The lineage graph that dbt generates made it easier to reason about what depended on what.
+
+**Idempotency** The first version of the repos collector inserted duplicates on every run. Adding ON CONFLICT DO NOTHING on the unique constraint fixed it and made the pipeline safe to run multiple times without side effects.
+
+---
+
+## Data Quality
+
+Every collector run logs to a pipeline_runs table records fetched, inserted, skipped, duration, and status. dbt runs automated tests after every transformation: not_null, unique, and accepted_values on all critical columns.
 
 ---
 

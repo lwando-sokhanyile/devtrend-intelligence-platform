@@ -15,7 +15,6 @@ import os
 from datetime import date, datetime, timedelta
 from dotenv import load_dotenv
 
-# ── Load .env file ────────────────────────────────────────────────────────────
 load_dotenv()
 
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
@@ -25,7 +24,6 @@ DB_NAME      = os.getenv("DB_NAME", "devtrend_db")
 DB_USER      = os.getenv("DB_USER")
 DB_PASSWORD  = os.getenv("DB_PASSWORD")
 
-# ── Logging ───────────────────────────────────────────────────────────────────
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s | %(levelname)s | %(message)s",
@@ -36,7 +34,6 @@ logging.basicConfig(
 )
 log = logging.getLogger(__name__)
 
-# ── GitHub API ────────────────────────────────────────────────────────────────
 GITHUB_API_URL = "https://api.github.com/search/users"
 HEADERS = {
     "Accept": "application/vnd.github.v3+json",
@@ -45,9 +42,6 @@ if GITHUB_TOKEN:
     HEADERS["Authorization"] = f"Bearer {GITHUB_TOKEN}"
 
 
-# ══════════════════════════════════════════════════════════════════════════════
-# STEP 1 — FETCH
-# ══════════════════════════════════════════════════════════════════════════════
 
 def fetch_trending_developers():
     """
@@ -120,9 +114,7 @@ def fetch_user_profile(username):
         return None
 
 
-# ══════════════════════════════════════════════════════════════════════════════
-# STEP 2 — VALIDATE
-# ══════════════════════════════════════════════════════════════════════════════
+
 
 def validate_developer(dev):
     """
@@ -139,9 +131,6 @@ def validate_developer(dev):
     return True
 
 
-# ══════════════════════════════════════════════════════════════════════════════
-# STEP 3 — DATABASE
-# ══════════════════════════════════════════════════════════════════════════════
 
 def get_db_connection():
     """Connects to PostgreSQL and returns the connection."""
@@ -193,9 +182,6 @@ def create_table(conn):
         raise
 
 
-# ══════════════════════════════════════════════════════════════════════════════
-# STEP 4 — LOAD
-# ══════════════════════════════════════════════════════════════════════════════
 
 def load_developers(conn, developers):
     """
@@ -263,10 +249,6 @@ def load_developers(conn, developers):
     log.info(f"Done — inserted: {inserted}, skipped: {skipped}")
     return inserted, skipped
 
-
-# ══════════════════════════════════════════════════════════════════════════════
-# MAIN
-# ══════════════════════════════════════════════════════════════════════════════
 
 def main():
     log.info("=" * 55)

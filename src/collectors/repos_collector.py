@@ -16,7 +16,7 @@ import json
 from datetime import date, datetime
 from dotenv import load_dotenv
  
-# ── Load .env file ────────────────────────────────────────────────────────────
+
 load_dotenv()
  
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
@@ -26,7 +26,7 @@ DB_NAME      = os.getenv("DB_NAME", "devtrend_db")
 DB_USER      = os.getenv("DB_USER")
 DB_PASSWORD  = os.getenv("DB_PASSWORD")
  
-# ── Logging ───────────────────────────────────────────────────────────────────
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s | %(levelname)s | %(message)s",
@@ -48,9 +48,6 @@ if GITHUB_TOKEN:
     HEADERS["Authorization"] = f"Bearer {GITHUB_TOKEN}"
  
  
-# ══════════════════════════════════════════════════════════════════════════════
-# STEP 1 — FETCH
-# ══════════════════════════════════════════════════════════════════════════════
  
 def fetch_trending_repos():
     """
@@ -96,11 +93,7 @@ def fetch_trending_repos():
         log.error(f"Failed to connect to GitHub API: {e}")
         raise
 
- 
 
-# ══════════════════════════════════════════════════════════════════════════════
-# STEP 2 — VALIDATE
-# ══════════════════════════════════════════════════════════════════════════════
  
 def validate_repo(repo):
     """
@@ -116,9 +109,7 @@ def validate_repo(repo):
  
     return True
  
-# ══════════════════════════════════════════════════════════════════════════════
-# STEP 3 — DATABASE
-# ══════════════════════════════════════════════════════════════════════════════
+
  
 def get_db_connection():
     """Connects to PostgreSQL and returns the connection."""
@@ -171,9 +162,7 @@ def create_table(conn):
 
 
 
-# ══════════════════════════════════════════════════════════════════════════════
-# STEP 4 — LOAD
-# ══════════════════════════════════════════════════════════════════════════════
+
  
 def load_repos(conn, repos):
     """
@@ -243,10 +232,7 @@ def load_repos(conn, repos):
     log.info(f"Done — inserted: {inserted}, skipped: {skipped}")
     return inserted, skipped
  
- 
-# ══════════════════════════════════════════════════════════════════════════════
-# MAIN
-# ══════════════════════════════════════════════════════════════════════════════
+
  
 def main():
     log.info("=" * 55)

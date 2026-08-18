@@ -16,7 +16,6 @@ from datetime import date, datetime, timedelta
 from collections import Counter
 from dotenv import load_dotenv
 
-# ── Load .env file ────────────────────────────────────────────────────────────
 load_dotenv()
 
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
@@ -26,7 +25,6 @@ DB_NAME      = os.getenv("DB_NAME", "devtrend_db")
 DB_USER      = os.getenv("DB_USER")
 DB_PASSWORD  = os.getenv("DB_PASSWORD")
 
-# ── Logging ───────────────────────────────────────────────────────────────────
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s | %(levelname)s | %(message)s",
@@ -37,7 +35,6 @@ logging.basicConfig(
 )
 log = logging.getLogger(__name__)
 
-# ── GitHub API ────────────────────────────────────────────────────────────────
 GITHUB_API_URL = "https://api.github.com/search/repositories"
 HEADERS = {
     "Accept": "application/vnd.github.v3+json",
@@ -46,9 +43,6 @@ if GITHUB_TOKEN:
     HEADERS["Authorization"] = f"Bearer {GITHUB_TOKEN}"
 
 
-# ══════════════════════════════════════════════════════════════════════════════
-# STEP 1 — FETCH
-# ══════════════════════════════════════════════════════════════════════════════
 
 def fetch_language_trends():
     """
@@ -113,9 +107,6 @@ def fetch_language_trends():
         raise
 
 
-# ══════════════════════════════════════════════════════════════════════════════
-# STEP 2 — VALIDATE
-# ══════════════════════════════════════════════════════════════════════════════
 
 def validate_language(record):
     """
@@ -133,9 +124,6 @@ def validate_language(record):
     return True
 
 
-# ══════════════════════════════════════════════════════════════════════════════
-# STEP 3 — DATABASE
-# ══════════════════════════════════════════════════════════════════════════════
 
 def get_db_connection():
     """Connects to PostgreSQL and returns the connection."""
@@ -181,10 +169,6 @@ def create_table(conn):
         conn.rollback()
         raise
 
-
-# ══════════════════════════════════════════════════════════════════════════════
-# STEP 4 — LOAD
-# ══════════════════════════════════════════════════════════════════════════════
 
 def load_language_trends(conn, records):
     """
@@ -243,9 +227,6 @@ def load_language_trends(conn, records):
     return inserted, skipped
 
 
-# ══════════════════════════════════════════════════════════════════════════════
-# MAIN
-# ══════════════════════════════════════════════════════════════════════════════
 
 def main():
     log.info("=" * 55)

@@ -1,0 +1,47 @@
+version: 2
+
+models:
+  - name: stg_trending_repos
+    description: "Cleaned and standardised trending repositories from the GitHub API"
+    columns:
+      - name: id
+        tests:
+          - not_null
+      - name: repo_name
+        tests:
+          - not_null
+      - name: owner
+        tests:
+          - not_null
+      - name: snapshot_date
+        tests:
+          - not_null
+
+  - name: stg_language_trends
+    description: "Cleaned language distribution from trending repositories"
+    columns:
+      - name: id
+        tests:
+          - not_null
+      - name: language
+        tests:
+          - not_null
+      - name: snapshot_date
+        tests:
+          - not_null
+      - name: repo_count
+        tests:
+          - not_null
+
+  - name: stg_trending_developers
+    description: "Cleaned trending developer profiles from the GitHub API"
+    columns:
+      - name: id
+        tests:
+          - not_null
+      - name: username
+        tests:
+          - not_null
+      - name: snapshot_date
+        tests:
+          - not_null

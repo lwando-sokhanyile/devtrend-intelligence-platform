@@ -1,0 +1,61 @@
+version: 2
+
+models:
+  - name: mart_trending_repos
+    description: "Daily top trending repositories with language rank and star count"
+    columns:
+      - name: repo_name
+        tests:
+          - not_null
+      - name: owner
+        tests:
+          - not_null
+      - name: snapshot_date
+        tests:
+          - not_null
+      - name: stars_total
+        tests:
+          - not_null
+
+  - name: mart_language_leaderboard
+    description: "Daily language rankings with 7 and 30 day trend scores"
+    columns:
+      - name: language
+        tests:
+          - not_null
+      - name: snapshot_date
+        tests:
+          - not_null
+      - name: repo_count
+        tests:
+          - not_null
+
+  - name: mart_repo_growth
+    description: "Repositories ranked by star velocity day over day"
+    columns:
+      - name: repo_name
+        tests:
+          - not_null
+      - name: snapshot_date
+        tests:
+          - not_null
+
+  - name: mart_developer_leaderboard
+    description: "Trending developers ranked by follower count per day"
+    columns:
+      - name: username
+        tests:
+          - not_null
+      - name: snapshot_date
+        tests:
+          - not_null
+
+  - name: mart_topic_trends
+    description: "Most common repository topics per day ranked by frequency"
+    columns:
+      - name: topic
+        tests:
+          - not_null
+      - name: snapshot_date
+        tests:
+          - not_null

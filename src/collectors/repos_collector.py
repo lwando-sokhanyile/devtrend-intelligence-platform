@@ -1,13 +1,4 @@
-"""
-Repositories Collector
-======================
-Fetches trending repositories from the GitHub API
-and loads them into PostgreSQL.
- 
-Author: Lwando Sokhanyile
-Project: DevTrend Intelligence Platform
-"""
- 
+
 import requests
 import psycopg2
 import logging
@@ -37,9 +28,6 @@ logging.basicConfig(
 )
 log = logging.getLogger(__name__)
  
-# ── GitHub API ────────────────────────────────────────────────────────────────
-# We search for repos created in the last 7 days with many stars
-# This is the closest public API approach to "trending"
 GITHUB_API_URL = "https://api.github.com/search/repositories"
 HEADERS = {
     "Accept": "application/vnd.github.v3+json",
@@ -57,7 +45,6 @@ def fetch_trending_repos():
     """
     log.info("Fetching trending repositories from GitHub API...")
  
-    # Search for repos created in the last 7 days, sorted by stars
     from datetime import timedelta
     week_ago = (date.today() - timedelta(days=7)).isoformat()
  
@@ -65,7 +52,7 @@ def fetch_trending_repos():
         "q": f"created:>{week_ago}",
         "sort": "stars",
         "order": "desc",
-        "per_page": 25,   # top 25 trending repos
+        "per_page": 25,   
     }
  
     try:
@@ -197,7 +184,6 @@ def load_repos(conn, repos):
  
     for repo in repos:
  
-        # Validate before inserting
         if not validate_repo(repo):
             skipped += 1
             continue
@@ -221,7 +207,7 @@ def load_repos(conn, repos):
                 if cur.rowcount > 0:
                     inserted += 1
                 else:
-                    skipped += 1  # already exists for today
+                    skipped += 1 
             conn.commit()
  
         except psycopg2.Error as e:
@@ -239,17 +225,14 @@ def main():
     log.info("Repos Collector Starting")
     log.info("=" * 55)
  
-    # Fetch
+    
     repos = fetch_trending_repos()
  
-    # Connect to database
     conn = get_db_connection()
  
     try:
-        # Create table if needed
         create_table(conn)
  
-        # Load data
         inserted, skipped = load_repos(conn, repos)
  
     finally:

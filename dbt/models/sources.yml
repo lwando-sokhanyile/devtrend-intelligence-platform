@@ -8,3 +8,4 @@ sources:
       - name: raw_trending_repos
       - name: raw_language_trends
       - name: raw_trending_developers
+      - name: pipeline_runs

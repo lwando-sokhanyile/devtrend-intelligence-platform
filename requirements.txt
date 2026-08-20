@@ -1,0 +1,6 @@
+requests==2.32.5
+psycopg2-binary==2.9.12
+python-dotenv==1.2.2
+apache-airflow==2.8.1
+dbt-core==1.7.4
+dbt-postgres==1.7.4

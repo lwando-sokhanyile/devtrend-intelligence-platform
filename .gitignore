@@ -1,7 +1,6 @@
-# Environment variables - NEVER commit this
+
 .env
 
-# Python
 __pycache__/
 *.py[cod]
 *.pyo
@@ -12,33 +11,25 @@ dist/
 build/
 .eggs/
 
-# Virtual environments
 venv/
 env/
 .venv/
 
-# Logs
 logs/
 *.log
 airflow/logs/
 
-# dbt
 dbt/target/
 dbt/dbt_packages/
 dbt/logs/
 
-# Data files
 data/
 
-# Docker
 .docker/
 
-# VS Code
 .vscode/
 
-# Windows
 Thumbs.db
 desktop.ini
 
-# Mac
 .DS_Store

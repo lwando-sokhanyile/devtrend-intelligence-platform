@@ -20,7 +20,6 @@ from airflow import DAG
 from airflow.operators.bash import BashOperator
 from airflow.operators.trigger_dagrun import TriggerDagRunOperator
 
-# ── Default arguments applied to every task ───────────────────────────────────
 default_args = {
     "owner":            "lwando",
     "depends_on_past":  False,
@@ -30,7 +29,6 @@ default_args = {
     "retry_delay":      timedelta(minutes=5),
 }
 
-# ── DAG Definition ────────────────────────────────────────────────────────────
 with DAG(
     dag_id="daily_ingest_dag",
     description="Runs all GitHub trending collectors daily",
@@ -41,32 +39,28 @@ with DAG(
     tags=["ingestion", "github", "daily"],
 ) as dag:
 
-    # ── Task 1: Repos Collector ───────────────────────────────────────────────
+  
     run_repos_collector = BashOperator(
         task_id="run_repos_collector",
         bash_command="cd /opt/airflow && python src/collectors/repos_collector.py",
     )
 
-    # ── Task 2: Languages Collector ───────────────────────────────────────────
     run_languages_collector = BashOperator(
         task_id="run_languages_collector",
         bash_command="cd /opt/airflow && python src/collectors/languages_collector.py",
     )
 
-    # ── Task 3: Developers Collector ──────────────────────────────────────────
     run_developers_collector = BashOperator(
         task_id="run_developers_collector",
         bash_command="cd /opt/airflow && python src/collectors/developers_collector.py",
     )
 
-    # ── Task 4: Trigger dbt transform DAG ─────────────────────────────────────
+
     trigger_dbt = TriggerDagRunOperator(
         task_id="trigger_dbt_transform",
         trigger_dag_id="dbt_transform_dag",
-        wait_for_completion=False,  # don't wait — let it run independently
+        wait_for_completion=False,  # don't wait let it run independently
     )
 
-    # ── Task Dependencies ─────────────────────────────────────────────────────
-    # repos → languages → developers → trigger dbt
-    # Each task only runs after the previous one succeeds
+    
     run_repos_collector >> run_languages_collector >> run_developers_collector >> trigger_dbt

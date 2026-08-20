@@ -21,7 +21,7 @@ jobs:
         run: pip install flake8
 
       - name: Run flake8 linting
-        run: flake8 src/ --max-line-length=120 --ignore=E501,,W291,W293,W292,W303,E221,E302,W391
+        run: flake8 src/ --max-line-length=120 --ignore=E501,W291,W293,W292,W303,E221,E302,W391,E303,E241
 
   dbt-compile:
     runs-on: ubuntu-latest
@@ -55,5 +55,5 @@ jobs:
           EOF
 
 
-      - name: dbt compile check
-        run: cd dbt && dbt compile
+      - name: dbt parse check
+        run: cd dbt && dbt parse

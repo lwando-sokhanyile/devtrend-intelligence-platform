@@ -36,7 +36,24 @@ jobs:
       - name: Install dbt
         run: pip install dbt-core dbt-postgres
 
+      - name: Create dbt profiles
+        run: |
+          mkdir -p ~/.dbt
+          cat > ~/.dbt/profiles.yml << EOF
+          devtrend:
+            target: dev
+            outputs:
+              dev:
+                type: postgres
+                host: localhost
+                port: 5432
+                dbname: devtrend_db
+                user: devtrend_user
+                password: devtrend123
+                schema: public
+                threads: 1
+          EOF
+
+
       - name: dbt compile check
         run: cd dbt && dbt compile
-        env:
-          DBT_PROFILES_DIR: .

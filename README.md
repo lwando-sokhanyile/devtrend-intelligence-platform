@@ -63,6 +63,21 @@ Metabase Dashboards
 ```
 
 ---
+## Dashboard
+
+### Overview
+![Overview](docs/screenshots/dashboard_overview.png)
+
+### Language Leaderboard
+![Languages](docs/screenshots/dashboard_languages.png)
+
+### Developer Leaderboard
+![Developers](docs/screenshots/dashboard_developers.png)
+
+### Topic Trends
+![Topics](docs/screenshots/dashboard_topics.png)
+
+---
 
 ## Tech Stack
 
@@ -218,26 +233,6 @@ MARTS (business-ready, dashboard-ready)
 | `mart_developer_leaderboard` | Trending developers with language and popular repo |
 | `mart_pipeline_health` | Pipeline run monitoring — success rates and durations |
 
----
-
-## Data Quality
-
-This project has three layers of data quality:
-
-**Layer 1 — Input Validation (Python)**
-Every record is validated before touching the database. Missing fields are rejected individually without crashing the pipeline.
-
-**Layer 2 — dbt Tests (SQL)**
-After every transformation, dbt runs automated tests:
-- `not_null` on all critical columns
-- `unique` on primary keys
-- `accepted_values` on categorical columns
-
-**Layer 3 — Pipeline Monitoring (PostgreSQL)**
-Every collector run writes to a `pipeline_runs` table logging:
-- Records fetched, inserted, and skipped
-- Run duration
-- Success or failure status
 
 ---
 

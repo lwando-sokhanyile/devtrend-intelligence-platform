@@ -38,17 +38,17 @@ with DAG(
 
     dbt_staging = BashOperator(
         task_id="dbt_run_staging",
-        bash_command="cd /dbt && dbt run --select staging",
+        bash_command="cd /opt/airflow/dbt && dbt run --select staging",
     )
 
     dbt_intermediate = BashOperator(
         task_id="dbt_run_intermediate",
-        bash_command="cd /dbt && dbt run --select intermediate",
+        bash_command="cd /opt/airflow/dbt && dbt run --select intermediate",
     )
 
     dbt_marts = BashOperator(
         task_id="dbt_run_marts",
-        bash_command="cd /dbt && dbt run --select marts",
+        bash_command="cd /opt/airflow/dbt && dbt run --select marts",
     )
 
     trigger_quality = TriggerDagRunOperator(

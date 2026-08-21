@@ -34,18 +34,18 @@ with DAG(
 
     test_staging = BashOperator(
         task_id="dbt_test_staging",
-        bash_command="cd /dbt && dbt test --select staging",
+        bash_command="cd /opt/airflow/dbt && dbt test --select staging",
     )
 
 
     test_intermediate = BashOperator(
         task_id="dbt_test_intermediate",
-        bash_command="cd /dbt && dbt test --select intermediate",
+        bash_command="cd /opt/airflow/dbt && dbt test --select intermediate",
     )
 
     test_marts = BashOperator(
         task_id="dbt_test_marts",
-        bash_command="cd /dbt && dbt test --select marts",
+        bash_command="cd /opt/airflow/dbt && dbt test --select marts",
     )
 
    

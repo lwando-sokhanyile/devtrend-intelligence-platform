@@ -61,6 +61,12 @@ Metabase Dashboards
         Trending Repos · Language Leaderboard · Repo Growth
         Topic Trends · Developer Leaderboard · Pipeline Health
 ```
+## Orchestration
+
+Apache Airflow orchestrates the full pipeline on a daily schedule. The DAG runs all three collectors in sequence, then triggers dbt transformations automatically.
+
+### Daily Ingest Pipeline — All Tasks Passing
+![Daily Ingest DAG](docs/screenshots/airflow_daily_ingest_dag.png)
 
 ---
 ## Dashboard

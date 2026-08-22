@@ -28,6 +28,8 @@ I also wanted to push myself to learn dbt properly, because most of my earlier p
 
 ## Architecture
 
+![Architecture Diagram](docs/architecture/architecture.png)
+
 ```
 GitHub API
     │

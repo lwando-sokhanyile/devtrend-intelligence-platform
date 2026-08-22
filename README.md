@@ -28,8 +28,6 @@ I also wanted to push myself to learn dbt properly, because most of my earlier p
 
 ## Architecture
 
-![Architecture Diagram](docs/architecture/architecture.png)
-
 ```
 GitHub API
     │
@@ -63,6 +61,8 @@ Metabase Dashboards
         Trending Repos · Language Leaderboard · Repo Growth
         Topic Trends · Developer Leaderboard · Pipeline Health
 ```
+![Architecture Diagram](docs/architecture/architecture.png)
+
 ## Orchestration
 
 Apache Airflow orchestrates the full pipeline on a daily schedule. The DAG runs all three collectors in sequence, then triggers dbt transformations automatically.

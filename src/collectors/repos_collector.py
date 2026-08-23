@@ -2,7 +2,7 @@
 import requests
 import psycopg2
 import json
-from datetime import date, datetime, timedelta
+from datetime import date, datetime
 from src.common.config import (
     GITHUB_TOKEN, DB_HOST, DB_PORT,
     DB_NAME, DB_USER, DB_PASSWORD

@@ -1,7 +1,5 @@
 import requests
 import psycopg2
-import logging
-import json
 from collections import Counter
 from datetime import date, datetime, timedelta
 from src.common.config import (

@@ -250,13 +250,13 @@ MARTS (business-ready, dashboard-ready)
 Free, reliable, well-documented, and requires no API key for basic endpoints. Rate limit increases from 60 to 5,000 requests/hour with a free token.
 
 **Why PostgreSQL over a data warehouse?**
-For a project of this scale, PostgreSQL handles everything needed — dbt transformations, Metabase queries, and Airflow metadata. No extra cost or complexity.
+For a project of this scale, PostgreSQL handles everything needed  dbt transformations, Metabase queries, and Airflow metadata. No extra cost or complexity.
 
 **Why Metabase over Tableau or QuickSight?**
 Metabase is free, open-source, runs in Docker alongside everything else, and connects directly to PostgreSQL. The dashboard logic transfers to any BI tool.
 
 **Why LocalExecutor for Airflow?**
-This project runs on a single machine. LocalExecutor is the right choice — no need for the complexity of CeleryExecutor or KubernetesExecutor at this scale.
+This project runs on a single machine. LocalExecutor is the right choice no need for the complexity of CeleryExecutor or KubernetesExecutor at this scale.
 
 ---
 

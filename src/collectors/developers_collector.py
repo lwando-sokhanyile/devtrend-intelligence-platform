@@ -1,40 +1,27 @@
-"""
-Developers Collector
-====================
-Fetches trending developers from GitHub API
-and loads them into PostgreSQL.
-
-Author: Lwando Sokhanyile
-Project: DevTrend Intelligence Platform
-"""
-
 import requests
 import psycopg2
 import logging
-import os
+import json
 from datetime import date, datetime, timedelta
-from dotenv import load_dotenv
-
-load_dotenv()
-
-GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
-DB_HOST      = os.getenv("DB_HOST", "localhost")
-DB_PORT      = os.getenv("DB_PORT", "5432")
-DB_NAME      = os.getenv("DB_NAME", "devtrend_db")
-DB_USER      = os.getenv("DB_USER")
-DB_PASSWORD  = os.getenv("DB_PASSWORD")
-
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s | %(levelname)s | %(message)s",
-    handlers=[
-        logging.StreamHandler(),
-        logging.FileHandler("developers_collector.log")
-    ]
+from src.common.config import (
+    GITHUB_TOKEN, DB_HOST, DB_PORT,
+    DB_NAME, DB_USER, DB_PASSWORD
 )
-log = logging.getLogger(__name__)
+from src.common.logging_config import setup_logging
+from src.common.pipeline_run import log_pipeline_run
 
-GITHUB_API_URL = "https://api.github.com/search/users"
+log_pipeline_run(
+    collector_name="repos_collector",
+    started_at=started_at,
+    records_fetched=len(repos),
+    records_inserted=inserted,
+    records_skipped=skipped,
+    status="success"
+)
+
+log = setup_logging(__name__)
+
+GITHUB_API_URL = "https://api.github.com/search/repositories"
 HEADERS = {
     "Accept": "application/vnd.github.v3+json",
 }
@@ -255,10 +242,8 @@ def main():
     log.info("Developers Collector Starting")
     log.info("=" * 55)
 
-    # Fetch developers
     developers = fetch_trending_developers()
 
-    # Connect to database
     conn = get_db_connection()
 
     try:

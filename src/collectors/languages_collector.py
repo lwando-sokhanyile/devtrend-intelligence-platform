@@ -1,39 +1,26 @@
-"""
-Languages Collector
-===================
-Fetches programming language distribution from
-trending GitHub repositories and loads it into PostgreSQL.
-
-Author: Lwando Sokhanyile
-Project: DevTrend Intelligence Platform
-"""
-
 import requests
 import psycopg2
 import logging
-import os
-from datetime import date, datetime, timedelta
+import json
 from collections import Counter
-from dotenv import load_dotenv
-
-load_dotenv()
-
-GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
-DB_HOST      = os.getenv("DB_HOST", "localhost")
-DB_PORT      = os.getenv("DB_PORT", "5432")
-DB_NAME      = os.getenv("DB_NAME", "devtrend_db")
-DB_USER      = os.getenv("DB_USER")
-DB_PASSWORD  = os.getenv("DB_PASSWORD")
-
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s | %(levelname)s | %(message)s",
-    handlers=[
-        logging.StreamHandler(),
-        logging.FileHandler("languages_collector.log")
-    ]
+from datetime import date, datetime, timedelta
+from src.common.config import (
+    GITHUB_TOKEN, DB_HOST, DB_PORT,
+    DB_NAME, DB_USER, DB_PASSWORD
 )
-log = logging.getLogger(__name__)
+from src.common.logging_config import setup_logging
+from src.common.pipeline_run import log_pipeline_run
+
+log_pipeline_run(
+    collector_name="repos_collector",
+    started_at=started_at,
+    records_fetched=len(repos),
+    records_inserted=inserted,
+    records_skipped=skipped,
+    status="success"
+)
+
+log = setup_logging(__name__)
 
 GITHUB_API_URL = "https://api.github.com/search/repositories"
 HEADERS = {
@@ -58,7 +45,7 @@ def fetch_language_trends():
         "q": f"created:>{week_ago}",
         "sort": "stars",
         "order": "desc",
-        "per_page": 100,  # fetch more to get better language distribution
+        "per_page": 100,  
     }
 
     try:
@@ -72,17 +59,15 @@ def fetch_language_trends():
         repos = response.json().get("items", [])
         log.info(f"Fetched {len(repos)} repos to analyse language distribution.")
 
-        # Count languages across all trending repos
+        
         languages = [
             repo["language"]
             for repo in repos
-            if repo.get("language")  # skip repos with no language
+            if repo.get("language") 
         ]
 
-        # Count occurrences of each language
         language_counts = Counter(languages)
 
-        # Build result list with rank
         results = []
         for rank, (language, count) in enumerate(language_counts.most_common(), start=1):
             results.append({
@@ -233,10 +218,8 @@ def main():
     log.info("Languages Collector Starting")
     log.info("=" * 55)
 
-    # Fetch language distribution
     records = fetch_language_trends()
 
-    # Connect to database
     conn = get_db_connection()
 
     try:

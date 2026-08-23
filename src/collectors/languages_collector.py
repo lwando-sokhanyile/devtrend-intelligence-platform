@@ -11,15 +11,6 @@ from src.common.config import (
 from src.common.logging_config import setup_logging
 from src.common.pipeline_run import log_pipeline_run
 
-log_pipeline_run(
-    collector_name="repos_collector",
-    started_at=started_at,
-    records_fetched=len(repos),
-    records_inserted=inserted,
-    records_skipped=skipped,
-    status="success"
-)
-
 log = setup_logging(__name__)
 
 GITHUB_API_URL = "https://api.github.com/search/repositories"
@@ -218,6 +209,8 @@ def main():
     log.info("Languages Collector Starting")
     log.info("=" * 55)
 
+    started_at = datetime.utcnow()
+
     records = fetch_language_trends()
 
     conn = get_db_connection()
@@ -229,6 +222,15 @@ def main():
     finally:
         conn.close()
         log.info("Database connection closed.")
+
+    log_pipeline_run(
+        collector_name="repos_collector",
+        started_at=started_at,
+        records_fetched=len(records),
+        records_inserted=inserted,
+        records_skipped=skipped,
+        status="success"
+    )
 
     log.info("=" * 55)
     log.info(f"Languages Collector Finished — {inserted} inserted, {skipped} skipped")

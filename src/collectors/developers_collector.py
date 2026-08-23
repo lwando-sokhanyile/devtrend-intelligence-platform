@@ -1,7 +1,5 @@
 import requests
 import psycopg2
-import logging
-import json
 from datetime import date, datetime, timedelta
 from src.common.config import (
     GITHUB_TOKEN, DB_HOST, DB_PORT,
@@ -10,14 +8,6 @@ from src.common.config import (
 from src.common.logging_config import setup_logging
 from src.common.pipeline_run import log_pipeline_run
 
-log_pipeline_run(
-    collector_name="repos_collector",
-    started_at=started_at,
-    records_fetched=len(repos),
-    records_inserted=inserted,
-    records_skipped=skipped,
-    status="success"
-)
 
 log = setup_logging(__name__)
 
@@ -242,6 +232,8 @@ def main():
     log.info("Developers Collector Starting")
     log.info("=" * 55)
 
+    started_at = datetime.utcnow()
+
     developers = fetch_trending_developers()
 
     conn = get_db_connection()
@@ -253,6 +245,15 @@ def main():
     finally:
         conn.close()
         log.info("Database connection closed.")
+
+    log_pipeline_run(
+        collector_name="repos_collector",
+        started_at=started_at,
+        records_fetched=len(developers),
+        records_inserted=inserted,
+        records_skipped=skipped,
+        status="success"
+    )
 
     log.info("=" * 55)
     log.info(f"Developers Collector Finished — {inserted} inserted, {skipped} skipped")

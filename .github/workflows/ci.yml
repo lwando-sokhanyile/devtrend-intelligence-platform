@@ -37,6 +37,8 @@ jobs:
         run: pip install dbt-core dbt-postgres
 
       - name: Create dbt profiles
+        env:
+          DBT_PASSWORD: ${{ secrets.DBT_PASSWORD }}
         run: |
           mkdir -p ~/.dbt
           cat > ~/.dbt/profiles.yml << EOF
@@ -49,7 +51,7 @@ jobs:
                 port: 5432
                 dbname: devtrend_db
                 user: devtrend_user
-                password: ${{ secrets.DBT_PASSWORD }
+                password: ${DBT_PASSWORD }
                 schema: public
                 threads: 1
           EOF
@@ -57,5 +59,4 @@ jobs:
 
       - name: dbt parse check
         run: cd dbt && dbt parse
-        env:
-          DBT_PASSWORD: ${{ secrets.DBT_PASSWORD }}
+        

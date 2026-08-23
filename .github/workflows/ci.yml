@@ -41,8 +41,9 @@ jobs:
           DBT_PASSWORD: ${{ secrets.DBT_PASSWORD }}
         run: |
           mkdir -p ~/.dbt
-          cat > ~/.dbt/profiles.yml << EOF
-          devtrend:
+          python -c "
+          import os
+          content = '''devtrend:
             target: dev
             outputs:
               dev:
@@ -51,10 +52,13 @@ jobs:
                 port: 5432
                 dbname: devtrend_db
                 user: devtrend_user
-                password: ${DBT_PASSWORD }
+                password: ''' + os.environ['DBT_PASSWORD'] + '''
                 schema: public
                 threads: 1
-          EOF
+          '''
+          with open(os.path.expanduser('~/.dbt/profiles.yml'), 'w') as f:
+              f.write(content)
+          "
 
 
       - name: dbt parse check

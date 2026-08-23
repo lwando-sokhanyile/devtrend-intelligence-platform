@@ -270,6 +270,13 @@ This project runs on a single machine. LocalExecutor is the right choice — no 
 
 **Idempotency** The first version of the repos collector inserted duplicates on every run. Adding ON CONFLICT DO NOTHING on the unique constraint fixed it and made the pipeline safe to run multiple times without side effects.
 
+**GitHub Actions secret injection inside a heredoc**
+When moving the database password to GitHub Secrets, injecting `${{ secrets.DBT_PASSWORD }}` 
+inside a bash heredoc caused a "bad substitution" error because the shell interprets `${}` 
+differently inside heredocs. The fix was to use a Python script to write the profiles.yml 
+file instead, reading the password from the environment variable directly. A small issue 
+that required understanding how shell variable substitution works in different contexts.
+
 ---
 
 ## Data Quality

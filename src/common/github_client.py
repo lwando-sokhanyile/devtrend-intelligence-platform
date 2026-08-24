@@ -4,9 +4,10 @@ Centralised GitHub API connection used by all collectors.
 """
 
 import requests
+from src.common.config import GITHUB_TOKEN
 
 BASE_URL = "https://api.github.com"
-from src.common.config import GITHUB_TOKEN
+
 
 HEADERS = {
     "Accept": "application/vnd.github.v3+json",

@@ -1,23 +1,16 @@
 
-import requests
 import psycopg2
 import json
 from datetime import date, datetime
 from src.common.config import (
-    GITHUB_TOKEN, DB_HOST, DB_PORT,
+    DB_HOST, DB_PORT,
     DB_NAME, DB_USER, DB_PASSWORD
 )
 from src.common.logging_config import setup_logging
 from src.common.pipeline_run import log_pipeline_run
+from src.common.github_client import get
 
 log = setup_logging(__name__)
-
-GITHUB_API_URL = "https://api.github.com/search/repositories"
-HEADERS = {
-    "Accept": "application/vnd.github.v3+json",
-}
-if GITHUB_TOKEN:
-    HEADERS["Authorization"] = f"Bearer {GITHUB_TOKEN}"
  
 def fetch_trending_repos():
     """
@@ -37,30 +30,10 @@ def fetch_trending_repos():
         "per_page": 25,   
     }
  
-    try:
-        response = requests.get(
-            GITHUB_API_URL,
-            headers=HEADERS,
-            params=params,
-            timeout=10
-        )
-        response.raise_for_status()
-        data = response.json()
-        repos = data.get("items", [])
-        log.info(f"Fetched {len(repos)} trending repositories.")
-        return repos
- 
-    except requests.exceptions.Timeout:
-        log.error("GitHub API request timed out.")
-        raise
- 
-    except requests.exceptions.HTTPError as e:
-        log.error(f"GitHub API error: {e.response.status_code} - {e.response.text}")
-        raise
- 
-    except requests.exceptions.RequestException as e:
-        log.error(f"Failed to connect to GitHub API: {e}")
-        raise
+    data = get("/search/repositories", params=params)
+    repos = data.get("items", [])
+    log.info(f"Fetched {len(repos)} trending repositories.")
+    return repos
 
 
  

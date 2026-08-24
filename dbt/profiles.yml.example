@@ -7,6 +7,6 @@ devtrend:
       port: 5432
       dbname: devtrend_db
       user: devtrend_user
-      password: devtrend123
+      password: "{{ env_var('DB_PASSWORD') }}"
       schema: public
       threads: 4

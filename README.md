@@ -17,7 +17,7 @@ GitHub surfaces trending repositories, languages, and developers every day but t
 
 I built a pipeline that captures this data every day, stores it in PostgreSQL, transforms it through a three-layer dbt model, and serves it through a live Metabase dashboard.
 
-The question it answers: **What technologies is the global developer community moving towards  and how fast?**
+The question it answers: **What technologies are appearing most frequently in GitHub trending repositories, and how are those trends changing over time?**
 
 ## Why I Built It
 
@@ -48,7 +48,7 @@ PostgreSQL — Raw Tables
 Apache Airflow — Orchestration
     │   daily_ingest_dag.py     → runs collectors daily at 06:00 UTC
     │   dbt_transform_dag.py    → runs dbt after ingestion
-    │   data_quality_dag.py     → runs tests and alerts on failure
+    │   data_quality_dag.py     → runs dbt tests and marks the workflow as failed when quality checks fail
     │
     ▼
 dbt — Transformation
@@ -97,7 +97,7 @@ Apache Airflow orchestrates the full pipeline on a daily schedule. The DAG runs 
 | PostgreSQL | 15 | Raw and analytics data storage |
 | Metabase | v0.49 | Dashboards and visualisations |
 | Docker + Compose | Latest | Containerisation and local deployment |
-| GitHub Actions | — | CI/CD on every push |
+| GitHub Actions | — | Automated CI checks on every push|
 
 ---
 

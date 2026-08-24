@@ -4,13 +4,9 @@ Centralised GitHub API connection used by all collectors.
 """
 
 import requests
-import os
-from dotenv import load_dotenv
 
-load_dotenv()
-
-GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 BASE_URL = "https://api.github.com"
+from src.common.config import GITHUB_TOKEN
 
 HEADERS = {
     "Accept": "application/vnd.github.v3+json",

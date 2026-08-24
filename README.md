@@ -239,7 +239,7 @@ MARTS (business-ready, dashboard-ready)
 | `mart_repo_growth` | Fastest growing repos by star velocity |
 | `mart_topic_trends` | Most common repository topics per day |
 | `mart_developer_leaderboard` | Trending developers with language and popular repo |
-| `mart_pipeline_health` | Pipeline run monitoring — success rates and durations |
+| `mart_pipeline_health` | Pipeline run monitoring success rates and durations |
 
 
 ---
@@ -281,7 +281,7 @@ that required understanding how shell variable substitution works in different c
 
 ## Data Quality
 
-Every collector run logs to a pipeline_runs table records fetched, inserted, skipped, duration, and status. dbt runs automated tests after every transformation: not_null, unique, and accepted_values on all critical columns.
+Every collector run logs to a pipeline_runs table records fetched, inserted, skipped, duration, and status. dbt runs automated tests after every transformation: `not_null` on all critical columns across staging and mart models.
 
 ---
 

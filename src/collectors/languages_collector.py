@@ -5,6 +5,7 @@ from src.common.config import (
     DB_HOST, DB_PORT,
     DB_NAME, DB_USER, DB_PASSWORD
 )
+from src.common.database import get_connection
 from src.common.github_client import get
 from src.common.logging_config import setup_logging
 from src.common.pipeline_run import log_pipeline_run
@@ -169,7 +170,7 @@ def main():
 
     records = fetch_language_trends()
 
-    conn = get_db_connection()
+    conn = get_connection()
 
     try:
         create_table(conn)

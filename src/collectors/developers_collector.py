@@ -1,4 +1,3 @@
-import requests
 import psycopg2
 from src.common.github_client import get
 from datetime import date, datetime, timedelta

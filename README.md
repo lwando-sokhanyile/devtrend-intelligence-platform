@@ -287,7 +287,7 @@ Every collector run logs to a pipeline_runs table records fetched, inserted, ski
 
 ## Author
 
-**Lwando Sokhanyile** — Self-taught Data Engineer
+**Lwando Sokhanyile**  Self-taught Data Engineer
 
 - GitHub: [@lwando-sokhanyile](https://github.com/lwando-sokhanyile)
 - LinkedIn: [linkedin.com/in/lwando-sokhanyile](https://linkedin.com/in/lwando-sokhanyile)
